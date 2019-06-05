@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.0.0.0.{build}
 image: Visual Studio 2017
 before_build:
 - cmd: dotnet restore
@@ -16,3 +16,11 @@ deploy:
     secure: YB/gMcTEK1SXu7Nbfra+fqx1+ByG6ALfsRhYzEzsT6okkbV809/n7VzhByohY6U2kR6SrjKgpNj1cm1xJdNnbg==
   aspnet_core: true
   app_offline: true
+platform:
+  - x86
+  - Any CPU
+configuration:
+  - Debug
+  - Release
+matrix:
+  fast_finish: true

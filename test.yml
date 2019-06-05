@@ -23,4 +23,4 @@ configuration:
   - Debug
   - Release
 matrix:
-  fast_finish: true
+  fast_finish: false

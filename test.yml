@@ -1,0 +1,18 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+before_build:
+- cmd: dotnet restore
+build:
+  publish_wap: true
+  publish_nuget: true
+  publish_aspnet_core: true
+  verbosity: minimal
+deploy:
+- provider: WebDeploy
+  server: https://simpleaspnetcoretest1.scm.azurewebsites.net:443/msdeploy.axd?site=SimpleASPnetCOREtest1
+  website: SimpleASPnetCOREtest1
+  username: $SimpleASPnetCOREtest1
+  password:
+    secure: YB/gMcTEK1SXu7Nbfra+fqx1+ByG6ALfsRhYzEzsT6okkbV809/n7VzhByohY6U2kR6SrjKgpNj1cm1xJdNnbg==
+  aspnet_core: true
+  app_offline: true

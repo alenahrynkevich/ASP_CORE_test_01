@@ -9,6 +9,9 @@ build:
   verbosity: minimal
 deploy:
 - provider: WebDeploy
+  on:
+    branch: master
+    configuration: Release
   server: https://simpleaspnetcoretest1.scm.azurewebsites.net:443/msdeploy.axd?site=SimpleASPnetCOREtest1
   website: SimpleASPnetCOREtest1
   username: $SimpleASPnetCOREtest1

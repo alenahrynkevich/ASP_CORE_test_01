@@ -17,7 +17,6 @@ deploy:
   aspnet_core: true
   app_offline: true
 platform:
-  - x86
   - Any CPU
 configuration:
   - Debug

@@ -1,0 +1,44 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+before_build:
+- ps: |
+    dotnet restore
+    $rand = [System.GUID]::NewGuid().ToString().ToUpper()
+    $newTitle = 'ViewData["Title"] = "{0}";' -f $rand
+    $f=Get-Content -Path .\ASPCOREtest1\Pages\About.cshtml
+    $res=@(); foreach($element in $f) { if ($start=$element.IndexOf('ViewData["Title"] =') -gt -1) { $res+='   ' + $newTitle } else { $res += $element } }
+    Set-Content -Path .\ASPCOREtest1\Pages\About.cshtml -Value $res
+build:
+  publish_nuget: true
+  publish_aspnet_core: true
+  verbosity: minimal
+deploy:
+- provider: AzureAppServiceZipDeploy
+  website: simpleaspnetcoretest1
+  username: AlenaDeploy01
+  password:
+    secure: W0dXfqyhjzLaIMtBLH2pyg==
+  artifact: ASPCOREtest1.zip
+after_deploy:
+- ps: |
+    Start-Sleep -Seconds 10
+    $attempts = 1; $foundFlag = 0
+    Try
+    { while ($attempts -le 3)  
+        {$content = (Invoke-WebRequest 'https://simpleaspnetcoretest1.azurewebsites.net/About').Content;
+         if ($content -Match $rand) {Write-Debug -Message "Test passed!"; $foundFlag = 1; break}
+         else {$attempts++; Start-Sleep -Seconds 15}}
+    }
+    Catch
+    {
+        Write-Debug -Message $_.Exception.Message
+        Break
+    }
+    Finally
+    {
+        if ($foundFlag -eq 0) {
+        $CustomMessageFail = "Deployment failed: could NOT find content {0} on About page in {1} attempts!" -f $rand, $attempts--;
+        Write-Output -Message $CustomMessageFail ; throw $CustomMessageFail }
+        $CustomMessageSuccess = "Deployment success: could find content {0} on About page in {1} attempts!" -f $rand, $attempts--;
+        Write-Output $CustomMessageSuccess
+    }
